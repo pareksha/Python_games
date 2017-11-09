@@ -72,20 +72,24 @@ print(' '.join(blank_list))
 while(x<6):
     print("\nGuess an alphabet")
     guess = (input()).upper()
-    if guess in blank_list:
-        print('You already guessed the letter..!!')
-    for i in range(len(list_)):
-        if(guess == list_[i]):
-            blank_list[i] = list_[i]
-    if guess not in list_:
-        x+=1
-    if '_' not in blank_list:
-        print('You won')
-        break
+    if len(guess) == 1:
+        if guess in blank_list:
+            print('You already guessed the letter..!!')
+        for i in range(len(list_)):
+            if(guess == list_[i]):
+                blank_list[i] = list_[i]
+        if guess not in list_:
+            x+=1
+        if '_' not in blank_list:
+            print('You won')
+            break
+        else:
+            pass
+        hangman(x)
+        print(' '.join(blank_list))
     else:
-        pass
-    hangman(x)
-    print(' '.join(blank_list))
+        print('Please enter only one character')
 
 if(x==6):
     print('You lost..!!')
+    print('Correct word is',string)
