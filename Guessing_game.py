@@ -1,9 +1,9 @@
 '''Guess the number game'''
 
 import random
-right_guess = random.randint(1,2)
+right_guess = random.randint(1,20)
 flag = False
-print("Guess a number between 1 and 10")
+print("Guess a number between 1 and 20")
 
 
 for i in range(0,3):
