@@ -1,5 +1,6 @@
 import random
 import sys
+import time
 
 
 def initialiseBoard():
@@ -46,8 +47,21 @@ def placeMouse():
         mouse_column_number = random.randint(1, len(grid_list))
     else:
         print('\nInitialise row and column for the mouse : ')
-        mouse_row_number = int(input('Row Number: '))
-        mouse_column_number = int(input('Column Number: '))
+        # Checking the user input
+        while 1:
+            mouse_row_number = int(input('Row Number: '))
+            if mouse_row_number <= len(grid_list):
+                break
+            else:
+                print('Input row out of grid. Please try again !')
+
+        while 1:
+            mouse_column_number = int(input('Column Number: '))
+            if mouse_column_number <= len(grid_list):
+                break
+            else:
+                print('Input column out of grid. Please try again !')
+
     return mouse_row_number, mouse_column_number
 
 
@@ -55,18 +69,18 @@ def getUserGuess():
     """Take user's guess.
         Return the guessed row and column.
     """
-    x = 1
-    while(x):
+    # Checking the user input
+    while 1:
         guess_row = int(input('Guess Row: '))
         if guess_row <= len(grid_list):
-            x = 0
+            break
         else:
             print('Input row out of grid. Please try again !')
-    x = 1
-    while(x):
+
+    while 1:
         guess_column = int(input('Guess Col: '))
         if guess_column <= len(grid_list):
-            x = 0
+            break
         else:
             print('Input column out of grid. Please try again !')
 
@@ -92,8 +106,12 @@ def update_grid(user_row, user_column, distance):
 
 
 def input_lives():
-    x = 1
-    while x:
+    """Number of lives of the hunter are input by the user.
+
+    Option to change the number of lives added.
+    """
+    # Checking the user input
+    while 1:
         # option to change the number of lives added
         if player == 'User':
             no_of_lives = int(input('How many lives do you want? '
@@ -102,7 +120,7 @@ def input_lives():
             no_of_lives = int(input('How many lives do you want to give to me? '
                                     '(Min 1, Max 10) : '))
         if no_of_lives in range(1, 11):
-            x = 0
+            break
         else:
             print('Lives must be between 1 and 10. Please try again !')
     return no_of_lives
@@ -148,6 +166,9 @@ def user_play():
 
 def computer_play():
     """Game Play by computer
+    Computer can intelligently play the game.
+
+    Role reverse feature added.
     """
     global player
     player = 'Computer'
@@ -157,12 +178,12 @@ def computer_play():
     list_of_grid_values = initialiseBoard()
     computer_guess_list = [(x,y) for x in range(1,len(list_of_grid_values) + 1)
                            for y in range(1,len(list_of_grid_values) + 1)]
+    previous_guess_list = []
     random.shuffle(computer_guess_list)
     mouse_row, mouse_column = placeMouse()
     print()
     n = no_of_lives
     flag = True
-    dist = random.randint(1, len(list_of_grid_values))
     while flag and n:
         printBoard(list_of_grid_values)
         print('\n')
@@ -170,14 +191,23 @@ def computer_play():
         if n != no_of_lives:
             previous_row_guess = computer_guess_row
             previous_column_guess = computer_guess_column
+            previous_guess_list.append((previous_row_guess,
+                                        previous_column_guess, distance))
 
-        for tuple_ in computer_guess_list:
-            computer_guess_row, computer_guess_column = tuple_
+        for available_guesses in computer_guess_list:
+            computer_guess_row, computer_guess_column = available_guesses
             if n != no_of_lives:
-                if abs(computer_guess_row - previous_row_guess) + \
-                        abs(computer_guess_column - previous_column_guess) == distance\
-                        and list_of_grid_values[computer_guess_row - 1] \
-                        [computer_guess_column - 1] == 'O':
+                num = 0
+                for pre_guess in previous_guess_list:
+                    if abs(computer_guess_row - pre_guess[0]) + \
+                            abs(computer_guess_column - pre_guess[1]) \
+                            == pre_guess[2] and \
+                            list_of_grid_values[computer_guess_row - 1] \
+                            [computer_guess_column - 1] == 'O':
+                        num += 1
+                    else:
+                        break
+                if num == len(previous_guess_list):
                     break
             else:
                 break
@@ -192,6 +222,7 @@ def computer_play():
             flag = False
         n -= 1
         print()
+        time.sleep(1)
 
     if flag:
         printBoard(list_of_grid_values)
