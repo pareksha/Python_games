@@ -2,6 +2,8 @@ import random
 import sys
 import time
 
+import os
+
 
 def initialiseBoard():
     """Set the grid dimensions according to the user.
@@ -126,22 +128,70 @@ def input_lives():
     return no_of_lives
 
 
-def user_play():
+def user_play(opt):
     """Game Play by user.
     """
+    global grid_list
     global player
     player = 'User'
-    print("\nLet's Play")
 
-    no_of_lives = input_lives()
-    list_of_grid_values = initialiseBoard()
-    mouse_row, mouse_column = placeMouse()
-    print()
+    if opt == 'save':
+        # loading the previous game
+        try:
+            variable_file = open('save_game_file.txt')
+            list_variable = variable_file.read().split(',')
 
-    n = no_of_lives
+            n, no_of_lives, str_, \
+                mouse_row, mouse_column = list_variable
+
+            n, no_of_lives, mouse_row, mouse_column = int(n), int(no_of_lives), \
+                int(mouse_row), int(mouse_column)
+
+            list_of_grid_values = []
+            x = str_.split(';')
+            for y in x:
+                inner_list = y.split(' ')
+                list_of_grid_values.append(inner_list)
+
+            grid_list = list_of_grid_values
+        except FileNotFoundError:
+            print('No save game present.')
+            return
+
+    else:
+        print("\nLet's Play")
+        no_of_lives = input_lives()
+        list_of_grid_values = initialiseBoard()
+        mouse_row, mouse_column = placeMouse()
+        print()
+        n = no_of_lives
+
     flag = True
+    opt = ''
     while flag and n:
+        print()
         printBoard(list_of_grid_values)
+        print()
+        if opt == 'new':
+            # asking the user to quit or to continue
+            input_ = input('Press \'q\' to \'save and quit\' or press enter '
+                           '(or input anything) to continue with the game -> (q/c) :')
+            if input_ == 'q':
+                # loading data into file
+                new_list = []
+                for x in list_of_grid_values:
+                    y = ' '.join(x)
+                    new_list.append(y)
+                str_ = ';'.join(new_list)
+
+                variable_list = [str(n), str(no_of_lives), str_,
+                                 str(mouse_row), str(mouse_column)]
+                variable_string = ','.join(variable_list)
+                file_ = open('save_game_file.txt', 'w')
+                file_.write(variable_string)
+                file_.close()
+                print('Please come back again !')
+                sys.exit()
         print()
         print('Guess {} out of {}...'.format(no_of_lives - n + 1, no_of_lives))
         user_guess_row, user_guess_col = getUserGuess()
@@ -156,6 +206,7 @@ def user_play():
             flag = False
         n -= 1
         print('\n')
+        opt = 'new'
 
     if flag:
         printBoard(list_of_grid_values)
@@ -232,13 +283,34 @@ def computer_play():
 
 
 if __name__ == '__main__':
+    # Game Play
+    while 1:
+        option = input('Want to play new game or load the saved game (Load/New) :')
+        if option in ['load', 'Load', 'LOAD']:
+            # load the previous game
+            user_play('save')
+            try:
+                os.remove('save_game_file.txt')
+            except FileNotFoundError:
+                pass
+            input_ = input('Let\'s play a new game ! (yes/no): ')
+            if input_ in ['No', 'NO', 'no']:
+                print('Bye, see you next time !')
+                sys.exit()
+            break
+        elif option in ['new', 'NEW', 'New']:
+            # new game
+            break
+        else:
+            print('Wrong Input. Try Again !')
+
     while 1:
         play = input('Want the computer to play and illustrate the game ? '
                      '(Yes/No) -> ')
-        if play == 'Yes':
+        if play in ['Yes', 'YES', 'yes']:
             computer_play()
-        elif play == 'No':
-            user_play()
+        elif play in ['No', 'NO', 'no']:
+            user_play('new')
         else:
             print('Wrong Input. Try Again !')
             continue
@@ -246,9 +318,9 @@ if __name__ == '__main__':
         while flag:
             # option to play again at the end
             ans = input('Want to play again ? (Yes/No) -> ')
-            if ans == 'Yes':
+            if ans in ['Yes', 'YES', 'yes']:
                 flag = False
-            elif ans == 'No':
+            elif ans in ['No', 'NO', 'no']:
                 print('Bye, see you next time !')
                 sys.exit()
             else:
