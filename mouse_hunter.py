@@ -3,6 +3,11 @@ import sys
 
 
 def initialiseBoard():
+    """Set the grid dimensions according to the user.
+        Function returns grid_list containing the grid values.
+
+        Option to change the size of the board added.
+    """
     global grid_list
     size_of_grid = int(input('Enter the board size: '))
     grid_list = [['O' for _ in range(size_of_grid)] for _ in range(size_of_grid)]
@@ -10,6 +15,9 @@ def initialiseBoard():
 
 
 def printBoard(list_):
+    """Prints the board after each guess.
+        list_ contains the grid which is to be printed.
+    """
     print('   ', end='')
     for j in range(len(list_)):
         print(str(j + 1).center(3), end='')
@@ -30,12 +38,18 @@ def printBoard(list_):
 
 
 def placeMouse():
+    """Place the mouse at random position on the grid.
+        Return the row and column number of the mouse
+    """
     mouse_row_number = random.randint(1, len(grid_list))
     mouse_column_number = random.randint(1, len(grid_list))
     return mouse_row_number, mouse_column_number
 
 
 def getUserGuess():
+    """Take user's guess.
+        Return the guessed row and column.
+    """
     x = 1
     while(x):
         guess_row = int(input('Guess Row: '))
@@ -55,10 +69,16 @@ def getUserGuess():
 
 
 def howFar(user_row, user_col, mouse_row, mouse_col):
+    """Return the distance, that is, the number of vertical and
+    horizontal steps to reach the mouse.
+    """
     return abs(user_row - mouse_row) + abs(user_col - mouse_col)
 
 
 def update_grid(user_row, user_column, distance):
+    """Update the grid with the distance of the mouse
+    from where the user guessed.
+    """
     if distance == 0:
         grid_list[user_row - 1][user_column - 1] = 'X'
     else:
@@ -67,6 +87,8 @@ def update_grid(user_row, user_column, distance):
 
 
 def main():
+    """Game Play.
+    """
     print("\nLet's Play")
     x = 1
     while x:
@@ -90,7 +112,6 @@ def main():
         distance = howFar(user_guess_row, user_guess_col,
                           mouse_row, mouse_column)
         update_grid(user_guess_row, user_guess_col, distance)
-        # print(mouse_row, mouse_column)
         if distance == 0:
             print('\n')
             printBoard(list_of_grid_values)
@@ -105,8 +126,6 @@ def main():
         print('\nYou ran out of lives !\n')
 
     return
-
-    # print(user_guess_row, user_guess_col)
 
 
 if __name__ == '__main__':
