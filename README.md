@@ -17,3 +17,9 @@ For source code see - https://github.com/pareksha/Python_games/blob/master/tic_t
 Mouse hunter is a board game in which a computer hides a mouse in a grid of your choice. You have to find the mouse within a limited number of guesses. But this isn't the real fun!  
 The real thing that may surprise you is that you can hide the mouse and the computer will be happy to find it for you. And you know what the computer can be much more intelligent than you if you program it so!  
 For source code see - https://github.com/pareksha/Python_games/blob/master/mouse_hunter.py
+
+# Maths Tester
+Maths tester is made on the python module Tkinter. Tkinter is used for building native GUI in python. The application (for kids), tests your calculative skills by showing simple maths questions. It comes with an integrated timer and a submit button to view scores at the end.  
+Additional dependency required - Tkinter  
+Download Tkinter, run - `sudo apt-get install python-tk`  
+For more information on tkinter,see https://docs.python.org/3/library/tk.html  
